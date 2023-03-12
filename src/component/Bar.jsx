@@ -72,7 +72,7 @@ function Bar({ song }, context) {
       </IconButton>
       {fmtdata && play && (
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
+          <Table size="small" aria-label="a dense table">
             <TableBody>
               {Object.keys(fmtdata).map((key) => (
                 <TableRow
