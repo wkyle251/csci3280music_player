@@ -74,8 +74,9 @@ function FileReader({lyric_path}) {
     }, [matchingLines]);
 
     useEffect(() => {
-        if(display_time - start in fileContent) {
-            setLyric_display(fileContent[display_time - start].content)
+        for(let i = display_time - start - 100; i<display_time - start + 100;i++) 
+        if(i in fileContent) {
+            setLyric_display(fileContent[i].content)
         }
     }, [display_time])
 
