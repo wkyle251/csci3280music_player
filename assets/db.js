@@ -1,2 +1,2 @@
-const song=[{"time":"1:55","name":"1.wav","title":"Left1","artist":"Peter","album":" Direction"},{"time":"1:55","name":"2.wav","title":"Middle","artist":"Peter2","album":" Direction"},{"time":"1:55","name":"3.wav","title":"Right","artist":"Peter3","album":" Direction"}]
+const song=[{"time":"1:55","name":"1.wav","title":"Left","artist":"test 1","album":" Direction","lyric":"./1.lrc"},{"time":"1:55","name":"2.wav","title":"Middle","artist":"Peter2","album":" Direction","lyric":"./2.lrc"},{"time":"1:55","name":"3.wav","title":"Right","artist":"Peter3","album":" Direction","lyric":"./3.lrc"},{"time":"3:00","name":"test.wav","title":"test","artist":"test","album":" test","lyric":"./test.lrc"}]
 export default song

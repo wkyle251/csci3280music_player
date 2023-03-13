@@ -4,7 +4,8 @@ import db from "../../assets/db"
 function FileReader({lyric_path}) {
     const [fileContent, setFileContent] = useState([]);
     const [matchingLines, setMatchingLines] = useState([]);
-
+    const [lyric_display, setLyric_display] = useState("");
+    const [display_time, setDisplay_time] = useState(0);
     const regex1 = /^\[\d{2}:\d{2}\.\d{2}\]/;
     const regex2 = /^\[\d{2}:\d{2}:\d{2}\]/;
 
@@ -30,6 +31,7 @@ function FileReader({lyric_path}) {
                         // console.log(timestamp)
                         content = line.substring(10);
                         // console.log(content)
+                        
                     } else if (regex2.test(line.substring(0, 10))) {
                         let minute = parseInt(line.substring(1, 3));
                         // console.log(minute)
@@ -48,6 +50,11 @@ function FileReader({lyric_path}) {
                     matchingLines.push({ timestamp, content });
                 }
                 setMatchingLines(matchingLines);
+                let duration = lyric_path.time.split(":")
+                duration = parseInt(duration[0])*60*1000+parseInt(duration[1])*1000;
+                setInterval(() => {
+                    setDisplay_time(display_time+10)
+                }, 10)
             }).catch(err => console.log(err))
     }, [lyric_path]);
 
@@ -62,27 +69,38 @@ function FileReader({lyric_path}) {
         setFileContent(lyrics);
     }, [matchingLines]);
 
+    useEffect(() => {
+        if(display_time in fileContent) {
+            setLyric_display(fileContent[display_time].content)
+        }
+    }, [display_time]) 
+
+
+
     function display_lyric(lyric_content) {
         return <p>{lyric_content}</p>;
     }
 
-    function interval_function(lyric_content) {
-        let intervalId = setInterval(display_lyric(lyric_content), 500);
+    function display_lyric2(lyric_content) {
+        return console.log(lyric_content);
+    }
+
+    function interval_function(lyric_content, timestamp) {
+        let intervalId = setInterval(display_lyric(lyric_content), timestamp);
         setTimeout(() => {
             clearInterval(intervalId);
           }, 1501);
     }
 
+    function display_num() {
+        for (let i = 0; i < 6; i++) {
+            print
+        }
+    }
+
     return (
         <div>
-            {Object.keys(fileContent).map((key) => (
-                
-                <div key={key}>
-                    <div>
-                        {display_lyric(fileContent[key].content)}
-                    </div>
-                </div>
-            ))}
+            {lyric_display}
         </div>
     );
 }
