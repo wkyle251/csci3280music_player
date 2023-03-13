@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import db from "../../assets/db"
 
 function FileReader({lyric_path}) {
@@ -6,6 +6,8 @@ function FileReader({lyric_path}) {
     const [matchingLines, setMatchingLines] = useState([]);
     const [lyric_display, setLyric_display] = useState("");
     const [display_time, setDisplay_time] = useState(0);
+    const [start,setstart] = useState(0);
+
     const regex1 = /^\[\d{2}:\d{2}\.\d{2}\]/;
     const regex2 = /^\[\d{2}:\d{2}:\d{2}\]/;
 
@@ -31,7 +33,7 @@ function FileReader({lyric_path}) {
                         // console.log(timestamp)
                         content = line.substring(10);
                         // console.log(content)
-                        
+
                     } else if (regex2.test(line.substring(0, 10))) {
                         let minute = parseInt(line.substring(1, 3));
                         // console.log(minute)
@@ -52,9 +54,11 @@ function FileReader({lyric_path}) {
                 setMatchingLines(matchingLines);
                 let duration = lyric_path.time.split(":")
                 duration = parseInt(duration[0])*60*1000+parseInt(duration[1])*1000;
+                setstart(Date.now())
+
                 setInterval(() => {
-                    setDisplay_time(display_time+10)
-                }, 10)
+                    setDisplay_time(Date.now())
+                  }, 10)
             }).catch(err => console.log(err))
     }, [lyric_path]);
 
@@ -70,10 +74,10 @@ function FileReader({lyric_path}) {
     }, [matchingLines]);
 
     useEffect(() => {
-        if(display_time in fileContent) {
-            setLyric_display(fileContent[display_time].content)
+        if(display_time - start in fileContent) {
+            setLyric_display(fileContent[display_time - start].content)
         }
-    }, [display_time]) 
+    }, [display_time])
 
 
 
@@ -100,6 +104,7 @@ function FileReader({lyric_path}) {
 
     return (
         <div>
+        {console.log(lyric_display)}
             {lyric_display}
         </div>
     );

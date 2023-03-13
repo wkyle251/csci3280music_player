@@ -30,7 +30,6 @@ const Player = ({ }, context) => {
             // play={play}
             // databack={(val) => setplay(val)}
             />
-            
         </div>
     )
 
