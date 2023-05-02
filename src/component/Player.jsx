@@ -40,6 +40,7 @@ const Player = ({}, context) => {
   // Connection opened
   socket.addEventListener('open', event => {
     socket.send('Hello Server!')
+    socket.send(`add:${db}`)
     // socket.send('getSong:')
     // setready(true)
   })

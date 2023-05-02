@@ -112,7 +112,7 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
   }, [data])
 
   useEffect(() => {
-    // if (searchby) {
+    if(searchby)
       sock(`getSong:${searchby}`)
       // setlist(
       //   list.filter(row => {
@@ -137,6 +137,7 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
         fullWidth
         minWidth={650}
       />
+      <button onClick={()=>{sock("getSong:")}}>refresh</button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
           <TableHead>
