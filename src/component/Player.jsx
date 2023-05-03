@@ -15,7 +15,7 @@ const Player = ({}, context) => {
   const [sckmsg,setmsg] = useState(null)
   const [ready,setready] = useState(false)
 
-  const socket = new WebSocket('ws://192.168.50.239:8765')
+  const socket = new WebSocket('ws://10.13.181.51:8765')
   socket.onopen = () => {
     console.log('open connection')
     // setready(true)
@@ -40,12 +40,13 @@ const Player = ({}, context) => {
   // Connection opened
   socket.addEventListener('open', event => {
     socket.send('Hello Server!')
-    socket.send(`add:${db}`)
+    socket.send(`add:${JSON.stringify(db)}`)
     // socket.send('getSong:')
     // setready(true)
   })
   socket.onmessage = event => {
     const data = event.data
+    console.log(typeof data)
     setdata(data)
     // console.log(
     //   b2(data).then(res => {

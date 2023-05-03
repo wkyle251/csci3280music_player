@@ -16,7 +16,7 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
   const [list, setlist] = useState(db)
 
   const [searchby, setsearch] = useState('')
-  const [color,setcolor] = useState([])
+  const [color, setcolor] = useState([])
 
   function b2 (blob) {
     return new Promise((resolve, reject) => {
@@ -25,7 +25,11 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
         const arrayBuffer = reader.result
         const decoder = new TextDecoder('utf-8')
         const jsonStr = decoder.decode(arrayBuffer)
-        const dictList = JSON.parse(jsonStr)
+        try {
+          var dictList = JSON.parse(jsonStr)
+        } catch {
+          reject('err')
+        }
         resolve(dictList)
       }
       reader.onerror = () => {
@@ -60,30 +64,30 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
   //   socket(msg)
   // }
 
-  const checkexist = (row)=>{
-
+  const checkexist = row => {
     //  db
-     const exists = db.some(obj =>
-      obj.time === row.time &&
-      obj.name === row.name &&
-      obj.title === row.title &&
-      obj.artist === row.artist &&
-      obj.album === row.album
-    );
+    const exists = db.some(
+      obj =>
+        obj.time === row.time &&
+        obj.name === row.name &&
+        obj.title === row.title &&
+        obj.artist === row.artist &&
+        obj.album === row.album
+    )
     return exists
   }
 
-  function red(list) {
-    const seenEntries = new Set();
+  function red (list) {
+    const seenEntries = new Set()
     return list.filter(obj => {
-      const entry = obj.time + obj.name + obj.title + obj.artist + obj.album;
+      const entry = obj.time + obj.name + obj.title + obj.artist + obj.album
       if (seenEntries.has(entry)) {
-        return false;
+        return false
       } else {
-        seenEntries.add(entry);
-        return true;
+        seenEntries.add(entry)
+        return true
       }
-    });
+    })
   }
 
   // useEffect(()=>{
@@ -94,35 +98,40 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
     if (!data) return
     if (typeof data == 'string') {
     } else {
-      let temp = b2(data).then(res=>{
-        console.log("res",res)
-        let newlist =[...list.filter(row => {
-            for (const key in row) {
-              if (row[key].toLowerCase().includes(searchby.toLowerCase()))
-                return true
-            }
-            return false
-          }),...res]
-          newlist = red(newlist)
-          setlist(newlist)
-
-      })
-
+      try {
+        let temp = b2(data).then(
+          res => {
+            console.log('res', res)
+            let newlist = [
+              ...list.filter(row => {
+                for (const key in row) {
+                  if (row[key].toLowerCase().includes(searchby.toLowerCase()))
+                    return true
+                }
+                return false
+              }),
+              ...res
+            ]
+            newlist = red(newlist)
+            setlist(newlist)
+          },
+          rej => {}
+        )
+      } catch {}
     }
   }, [data])
 
   useEffect(() => {
-    if(searchby)
-      sock(`getSong:${searchby}`)
-      // setlist(
-      //   list.filter(row => {
-      //     for (const key in row) {
-      //       if (row[key].toLowerCase().includes(searchby.toLowerCase()))
-      //         return true
-      //     }
-      //     return false
-      //   })
-      // )
+    if (searchby) sock(`getSong:${searchby}`)
+    // setlist(
+    //   list.filter(row => {
+    //     for (const key in row) {
+    //       if (row[key].toLowerCase().includes(searchby.toLowerCase()))
+    //         return true
+    //     }
+    //     return false
+    //   })
+    // )
     // } else setlist(db)
   }, [searchby])
 
@@ -137,12 +146,20 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
         fullWidth
         minWidth={650}
       />
-      <button onClick={()=>{sock("getSong:")}}>refresh</button>
+      <button
+        onClick={() => {
+          sock('play:numb.wav')
+
+          sock('getSong:')
+        }}
+      >
+        refresh
+      </button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
           <TableHead>
             <TableRow>
-            <TableCell align='right'>location</TableCell>
+              <TableCell align='right'>location</TableCell>
               <TableCell>Filename</TableCell>
               <TableCell align='right'>duration</TableCell>
               <TableCell align='right'>title</TableCell>
@@ -156,9 +173,12 @@ const Table2 = ({ songback, sock, data, ready }, context) => {
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell align='right'>{checkexist(row)?"local":"remote"}</TableCell>
+                <TableCell align='right'>
+                  {checkexist(row) ? 'local' : 'remote'}
+                </TableCell>
                 <TableCell component='th' scope='row'>
-                  {row.name}{checkexist(row)?"  o":""}
+                  {row.name}
+                  {checkexist(row) ? '  o' : ''}
                 </TableCell>
                 <TableCell align='right'>{row.time}</TableCell>
                 <TableCell align='right'>{row.title}</TableCell>
